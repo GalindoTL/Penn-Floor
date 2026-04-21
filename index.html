@@ -632,6 +632,16 @@ function showTab(t,btn){
   document.getElementById('tab-'+t).classList.remove('hidden');
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
+  // When switching to Production, re-render all DT lists to show breaks
+  if(t==='prod'){
+    ensureBreaks();
+    localStorage.setItem('penn_v3',JSON.stringify(S));
+    S.stations.forEach(function(st,i){
+      var pd=ensureDay(activeDay).prod[st]||{actual:'',goal:'',downtimes:[]};
+      renderDTList(i,pd.downtimes||[]);
+    });
+    updateProdTotals();
+  }
 }
 
 // -- Daily ---------------------------------------------------------------------
