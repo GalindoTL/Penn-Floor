@@ -373,11 +373,7 @@ select option{background:var(--bg3)}
       <div class="fgrp"><label>Facility</label><input type="text" id="set-fac" oninput="saveSettings()"></div>
     </div>
   </div>
-  <div class="stblk">
-    <div class="slbl" style="margin-bottom:10px">Stations / Work Areas</div>
-    <div id="st-settings"></div>
-    <button class="badd" onclick="openModal('station-settings')">+ Add Station</button>
-  </div>
+  
   <div class="stblk">
     <div class="slbl" style="margin-bottom:10px">Employees</div>
     <div id="emp-settings"></div>
@@ -739,11 +735,14 @@ function updateAttMetrics(){
 }
 
 // -- Production ----------------------------------------------------------------
+const NO_BREAK_STATIONS=['C/O SAW 1','C/O SAW 2','OVEN 5','3150 PRESS OPERATOR'];
+
 function ensureBreaks(){
   var data=ensureDay(activeDay);
   S.stations.forEach(function(st){
     if(!data.prod[st])data.prod[st]={actual:'',goal:'',downtimes:[]};
     if(!data.prod[st].downtimes)data.prod[st].downtimes=[];
+    if(NO_BREAK_STATIONS.indexOf(st)>=0)return;
     var hasBreaks=data.prod[st].downtimes.some(function(d){return d.cat==='Break';});
     if(!hasBreaks){
       BREAKS.forEach(function(b){data.prod[st].downtimes.push({mins:b.mins,cat:b.cat,desc:b.desc});});
