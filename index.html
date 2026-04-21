@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Penn Aluminum -- Supervisor Log</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -142,6 +145,7 @@ select option{background:var(--bg3)}
     <div class="logo-dept">Tube Mill Department</div>
     <div class="logo-badge" id="sb-supervisor">Luis Galindo</div>
     <div class="logo-sub">Murphysboro, IL · Marmon / Berkshire Hathaway</div>
+    <div class="logo-sub" style="color:var(--ac);margin-top:2px">v2.5 · Apr 2026</div>
   </div>
   <div class="week-nav">
     <div class="slbl">This Week</div>
@@ -589,6 +593,18 @@ if(lastDate&&lastDate!==ds(today))S.todos.forEach(t=>{if(!t.done)t.carried=true;
 localStorage.setItem('penn_last',ds(today));
 buildSidebar();buildEmpGrid();buildProdList();buildSettings();populateRptDays();updateDashboard();showPage('dashboard');
 setInterval(()=>{if(unsaved&&currentPage==='daily'){collectDay();persist();}},60000);
+// Force render breaks after everything is ready
+setTimeout(function(){
+  if(currentPage==='daily'){
+    ensureBreaks();
+    localStorage.setItem('penn_v3',JSON.stringify(S));
+    S.stations.forEach(function(st,i){
+      var pd=ensureDay(activeDay).prod[st]||{actual:'',goal:'',downtimes:[]};
+      renderDTList(i,pd.downtimes||[]);
+    });
+    updateProdTotals();
+  }
+},300);
 
 // -- Sidebar -------------------------------------------------------------------
 function buildSidebar(){
