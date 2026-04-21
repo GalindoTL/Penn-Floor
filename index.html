@@ -651,9 +651,13 @@ function loadDay(){
     const ni=card.querySelector('.enote input');if(ni)ni.value=note;
   });
   updateAttMetrics();
-  // Build HTML, add breaks to data, then fill values
+  // Build HTML structure
   buildProdList();
+  // Add breaks to data (modifies S.week but doesn't save yet)
   ensureBreaks();
+  // Save breaks immediately so they persist across tab switches
+  localStorage.setItem('penn_v3',JSON.stringify(S));
+  // Fill values and render DT lists from now-complete data
   S.stations.forEach((st,i)=>{
     const pd=ensureDay(activeDay).prod[st]||{actual:'',goal:'',downtimes:[]};
     const ae=document.getElementById('pa-'+i),ge=document.getElementById('pg-'+i);
